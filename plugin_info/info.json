@@ -1,0 +1,13 @@
+{
+	"id" : "porte",
+	"name" : "Gestion de vos portes",
+	"description" : "Ce plugin, permet de gere vos porte",
+	"licence" : "AGPL",
+	"author" : "Halbout Michael",
+	"require" : "4.0",
+	"category" : "automation protocol",
+	"hasOwnDeamon" : true,
+	"compatibility" : ["miniplus","smart","rpi","docker","diy","mobile","v4"],
+ 	"documentation" : "https://mika-nt28.github.io/Documentations/porte/#language#/",
+	"changelog" : "https://mika-nt28.github.io/Documentations/porte/#language#/changelog"
+}

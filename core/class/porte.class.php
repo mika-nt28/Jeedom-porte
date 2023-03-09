@@ -411,6 +411,7 @@ class porteCmd extends cmd {
 				cache::set('porte::ChangeStateStop::'.$this->getEqLogic()->getId(),microtime(true), 0);
 				$this->getEqLogic()->UpdateOuverture();
 			break;
+}
 	}
 }
 ?>

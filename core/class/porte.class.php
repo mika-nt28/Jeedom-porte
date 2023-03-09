@@ -77,12 +77,24 @@ class porte extends eqLogic {
 		if (is_object($detectedCmd) && is_object($Ouvrant) && $Ouvrant->getIsEnable()) {
 			$isOpen=$Ouvrant->getConfiguration('OpenStateCmd').$Ouvrant->getConfiguration('OpenStateOperande').$Ouvrant->getConfiguration('OpenStateValue');
 			if($Ouvrant->EvaluateCondition($isOpen)){
-				if($Ouvrant->getConfiguration('StopStateCmd') == '' && cache::byKey('porte::Move::'.$Ouvrant->getId())->getValue(false)){
-					log::add('porte','info',$Ouvrant->getHumanName().'[Open] Stop du mouvement détecté par '.$detectedCmd->getHumanName());
+				if(cache::byKey('porte::Move::'.$Ouvrant->getEqLogic()->getId())->getValue(false)){
+					log::add('porte','info',$Ouvrant->getHumanName().'[Stop]: Action détectée sur '.$detectedCmd->getHumanName());
+					cache::set('porte::ChangeStateStop::'.$Ouvrant->getId(),microtime(true), 0);
 					cache::set('porte::Move::'.$Ouvrant->getId(),false, 0);
+					$Ouvrant->UpdateOuverture();
 				}else{
-					log::add('porte','info',$Ouvrant->getHumanName().'[Open] Mouvement détécter sur '.$detectedCmd->getHumanName());
-					cache::set('porte::Move::'.$Ouvrant->getId(),true, 0);
+					if(cache::byKey('porte::Sense::'.$Ouvrant->getEqLogic()->getId())->getValue(false)){
+						log::add('porte','info',$Ouvrant->getHumanName().'[Close]: Action détectée sur '.$detectedCmd->getHumanName());
+						cache::set('porte::ChangeStateStart::'.$Ouvrant->getId(),microtime(true), 0);
+						cache::set('porte::Sense::'.$Ouvrant->getId(),false, 0);
+						cache::set('porte::Move::'.$Ouvrant->getId(),true, 0);
+
+					}else{
+						log::add('porte','info',$Ouvrant->getHumanName().'[Open]: Action détectée sur '.$detectedCmd->getHumanName());
+						cache::set('porte::ChangeStateStart::'.$Ouvrant->getId(),microtime(true), 0);
+						cache::set('porte::Sense::'.$Ouvrant->getId(),true, 0);
+						cache::set('porte::Move::'.$Ouvrant->getId(),true, 0);
+					}
 				}
 			}
 		}
@@ -94,13 +106,24 @@ class porte extends eqLogic {
 		if (is_object($detectedCmd) && is_object($Ouvrant) && $Ouvrant->getIsEnable()) {
 			$isClose=$Ouvrant->getConfiguration('CloseStateCmd').$Ouvrant->getConfiguration('CloseStateOperande').$Ouvrant->getConfiguration('CloseStateValue');
 			if($Ouvrant->EvaluateCondition($isClose)){
-				if($Ouvrant->getConfiguration('StopStateCmd') == '' && cache::byKey('porte::Move::'.$Ouvrant->getId())->getValue(false)){
-					log::add('porte','info',$Ouvrant->getHumanName().'[Close] Stop du mouvement détecté par '.$detectedCmd->getHumanName());
+				if(cache::byKey('porte::Move::'.$Ouvrant->getEqLogic()->getId())->getValue(false)){
+					log::add('porte','info',$Ouvrant->getHumanName().'[Stop]: Action détectée sur '.$detectedCmd->getHumanName());
 					cache::set('porte::ChangeStateStop::'.$Ouvrant->getId(),microtime(true), 0);
 					cache::set('porte::Move::'.$Ouvrant->getId(),false, 0);
+					$Ouvrant->UpdateOuverture();
 				}else{
-					log::add('porte','info',$Ouvrant->getHumanName().'[Close] Mouvement détecté sur '.$detectedCmd->getHumanName());
-					cache::set('porte::Move::'.$Ouvrant->getId(),true, 0);
+					if(cache::byKey('porte::Sense::'.$Ouvrant->getEqLogic()->getId())->getValue(false)){
+						log::add('porte','info',$Ouvrant->getHumanName().'[Close]: Action détectée sur '.$detectedCmd->getHumanName());
+						cache::set('porte::ChangeStateStart::'.$Ouvrant->getId(),microtime(true), 0);
+						cache::set('porte::Sense::'.$Ouvrant->getId(),false, 0);
+						cache::set('porte::Move::'.$Ouvrant->getId(),true, 0);
+
+					}else{
+						log::add('porte','info',$Ouvrant->getHumanName().'[Open]: Action détectée sur '.$detectedCmd->getHumanName());
+						cache::set('porte::ChangeStateStart::'.$Ouvrant->getId(),microtime(true), 0);
+						cache::set('porte::Sense::'.$Ouvrant->getId(),true, 0);
+						cache::set('porte::Move::'.$Ouvrant->getId(),true, 0);
+					}
 				}
 			}
 		}
@@ -115,7 +138,10 @@ class porte extends eqLogic {
 				log::add('porte','info',$Ouvrant->getHumanName().'[Stop]: Action détectée sur '.$detectedCmd->getHumanName());
 				$Move=cache::byKey('porte::Move::'.$Ouvrant$Ouvrant->getId());
 				if(is_object($Move) && $Move->getValue(false)){
+					log::add('porte','info',$Ouvrant->getHumanName().'[Stop]: Action détectée sur '.$detectedCmd->getHumanName());
+					cache::set('porte::ChangeStateStop::'.$Ouvrant->getId(),microtime(true), 0);
 					cache::set('porte::Move::'.$Ouvrant->getId(),false, 0);
+					$Ouvrant->UpdateOuverture()
 				}
 			}
 		}
@@ -270,10 +296,10 @@ class porte extends eqLogic {
 	}
 	public function postSave() {
 		$this->StopListener();
-		//$hauteur=$this->AddCommande("Hauteur","hauteur","info",'numeric',0,null,null,'FLAP_STATE');
+		$hauteur=$this->AddCommande("Ouverture","ouverture","info",'numeric',0,null,null,'FLAP_STATE');
 		//$this->AddCommande("Position","position","action",'slider',1,$hauteur->getId(),null,'FLAP_SLIDER');
-		$this->AddCommande("Up","up","action", 'other',1,null,'<i class="fa fa-arrow-up"></i>','FLAP_UP');
-		$this->AddCommande("Down","down","action", 'other',1,null,'<i class="fa fa-arrow-down"></i>','FLAP_DOWN');
+		$this->AddCommande("Open","open","action", 'other',1,null,'<i class="fa fa-arrow-up"></i>','FLAP_UP');
+		$this->AddCommande("Close","close","action", 'other',1,null,'<i class="fa fa-arrow-down"></i>','FLAP_DOWN');
 		$this->AddCommande("Stop","stop","action", 'other',1,null,'<i class="fa fa-stop"></i>','FLAP_STOP');
 		$this->StartListener();
 		$this->CreateDemon();   
@@ -296,10 +322,95 @@ class porte extends eqLogic {
 		if (is_object($cron)) 	
 			$cron->remove();
 	}
+	public function UpdateOuverture() {
+		$ChangeState = cache::byKey('porte::ChangeState::'.$this->getId())->getValue(false);
+		$ChangeStateStart = cache::byKey('porte::ChangeStateStart::'.$this->getId())->getValue(microtime(true));
+		$ChangeStateStop = cache::byKey('porte::ChangeStateStop::'.$this->getId())->getValue(microtime(true));	
+		$TempsAction=$ChangeStateStop-$ChangeStateStart;	
+		$TempsAction=round($TempsAction*1000000);
+		$OuvertureActuel=$this->getCmd(null,'ouverture')->execCmd();
+		log::add('porte','debug',$this->getHumanName().' Temps de mouvement d de '.$TempsAction.'µs');
+		if($OuvertureActuel == 0){
+			$TempsAction -= $this->getTime('Tdecol');
+			log::add('porte','debug',$this->getHumanName().' Suppression du temps de décollement');
+		}
+		if($ChangeState)
+			$Temps = $this->getTime('TpsUp') - $this->getTime('Tdecol');
+		else
+			$Temps = $this->getTime('TpsDown') - $this->getTime('Tdecol');
+		$Ouverture=round($TempsAction*100/$Temps);
+		log::add('porte','debug',$this->getHumanName().' Mouvement du volet de '.$Ouverture.'%');
+		if($ChangeState)
+			$Ouverture=round($OuvertureActuel+$Ouverture);
+		else
+			$Ouverture=round($OuvertureActuel-$Ouverture);
+		if($Ouverture<0)
+			$Ouverture=0;
+		if($Ouverture>100)
+			$Ouverture=100;
+		log::add('porte','debug',$this->getHumanName().' L\'ourant est à '.$Ouverture.'%');
+		$this->checkAndUpdateCmd('ouverture',$Ouverture);
+	}
 }
 class porteCmd extends cmd {
     public function execute($_options = null) {
-		
+		switch($this->getLogicalId()){
+			case "open":
+				if(!cache::byKey('porte::Sense::'.$this->getEqLogic()->getId())->getValue(false)){
+					$cmd=cmd::byId(str_replace('#','',$this->getEqLogic()->getConfiguration('cmdOpen')));
+					if(is_object($cmd)){
+						if(cache::byKey('porte::Move::'.$this->getEqLogic()->getId())->getValue(false)){
+							log::add('porte','debug',$this->getEqLogic()->getHumanName().' Exécution de la commande '.$cmd->getHumanName());
+							$cmd->execCmd(null);
+						}
+						log::add('porte','debug',$this->getEqLogic()->getHumanName().' Exécution de la commande '.$cmd->getHumanName());
+						$cmd->execCmd(null);
+					}
+				}
+				cache::set('porte::ChangeStateStart::'.$this->getEqLogic()->getId(),microtime(true), 0);
+				cache::set('porte::Sense::'.$this->getEqLogic()->getId(),true, 0);
+				cache::set('porte::Move::'.$this->getEqLogic()->getId(),true, 0);
+			break;
+			case "close":
+				$cmd=cmd::byId(str_replace('#','',$this->getEqLogic()->getConfiguration('cmdClose')));
+				if(is_object($cmd)){
+					log::add('porte','debug',$this->getEqLogic()->getHumanName().' Exécution de la commande '.$cmd->getHumanName());
+					$cmd->execCmd(null);
+				}else{
+					if(cache::byKey('porte::Sense::'.$this->getEqLogic()->getId())->getValue(false)){
+						$cmd=cmd::byId(str_replace('#','',$this->getEqLogic()->getConfiguration('cmdOpen')));
+						if(is_object($cmd)){
+							if(cache::byKey('porte::Move::'.$this->getEqLogic()->getId())->getValue(false)){
+								log::add('porte','debug',$this->getEqLogic()->getHumanName().' Exécution de la commande '.$cmd->getHumanName());
+								$cmd->execCmd(null);
+							}
+							log::add('porte','debug',$this->getEqLogic()->getHumanName().' Exécution de la commande '.$cmd->getHumanName());
+							$cmd->execCmd(null);
+						}
+					}
+				}
+				cache::set('porte::ChangeStateStart::'.$this->getEqLogic()->getId(),microtime(true), 0);
+				cache::set('porte::Sense::'.$this->getEqLogic()->getId(),false, 0);
+				cache::set('porte::Move::'.$this->getEqLogic()->getId(),true, 0);
+			break;
+			case "stop":
+				$cmd=cmd::byId(str_replace('#','',$this->getEqLogic()->getConfiguration('cmdStop')));
+				if(is_object($cmd)){
+					log::add('porte','debug',$this->getEqLogic()->getHumanName().' Exécution de la commande '.$cmd->getHumanName());
+					$cmd->execCmd(null);
+				}else{
+					if(cache::byKey('porte::Move::'.$this->getEqLogic()->getId())->getValue(false)){
+						$cmd=cmd::byId(str_replace('#','',$this->getEqLogic()->getConfiguration('cmdOpen')));
+						if(is_object($cmd)){
+							log::add('porte','debug',$this->getEqLogic()->getHumanName().' Exécution de la commande '.$cmd->getHumanName());
+							$cmd->execCmd(null);
+						}
+					}
+				}
+				cache::set('porte::Move::'.$this->getEqLogic()->getId(),false, 0);
+				cache::set('porte::ChangeStateStop::'.$this->getEqLogic()->getId(),microtime(true), 0);
+				$this->getEqLogic()->UpdateOuverture();
+			break;
 	}
 }
 ?>

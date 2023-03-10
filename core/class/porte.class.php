@@ -20,12 +20,12 @@ class porte extends eqLogic {
 		$return['state'] = 'nok';
 		foreach(eqLogic::byType('porte') as $Ouvrant){
 			if($Ouvrant->getIsEnable()){
-				if($Ouvrant->getConfiguration('UpStateCmd') != '' ){				
+				if($Ouvrant->getConfiguration('OpenStateCmd') != '' ){				
 					$listener = listener::byClassAndFunction('porte', 'OpenDoors', array('id' => $Ouvrant->getId()));
 					if (!is_object($listener))
 						return $return;
 				}
-				if($Ouvrant->getConfiguration('DownStateCmd') != ''){				
+				if($Ouvrant->getConfiguration('CloseStateCmd') != ''){				
 					$listener = listener::byClassAndFunction('porte', 'CloseDoors', array('id' => $Ouvrant->getId()));
 					if (!is_object($listener))
 						return $return;
@@ -35,7 +35,7 @@ class porte extends eqLogic {
 					if (!is_object($listener))
 						return $return;
 				}
-				if($Ouvrant->getConfiguration('EndUpCmd') != '' || $Ouvrant->getConfiguration('EndDownCmd') != ''){
+				if($Ouvrant->getConfiguration('EndOpenCmd') != '' || $Ouvrant->getConfiguration('EndCloseCmd') != ''){
 					$listener = listener::byClassAndFunction('porte', 'EndDoors', array('id' => $Ouvrant->getId()));
 					if (!is_object($listener))
 						return $return;
@@ -136,12 +136,11 @@ class porte extends eqLogic {
 			$isStop=$Ouvrant->getConfiguration('StopStateCmd').$Ouvrant->getConfiguration('StopStateOperande').$Ouvrant->getConfiguration('StopStateValue');
 			if($Ouvrant->EvaluateCondition($isStop)){
 				log::add('porte','info',$Ouvrant->getHumanName().'[Stop]: Action détectée sur '.$detectedCmd->getHumanName());
-				$Move=cache::byKey('porte::Move::'.$Ouvrant$Ouvrant->getId());
-				if(is_object($Move) && $Move->getValue(false)){
+				if(cache::byKey('porte::Move::'.$Ouvrant->getEqLogic()->getId())->getValue(false)){
 					log::add('porte','info',$Ouvrant->getHumanName().'[Stop]: Action détectée sur '.$detectedCmd->getHumanName());
 					cache::set('porte::ChangeStateStop::'.$Ouvrant->getId(),microtime(true), 0);
 					cache::set('porte::Move::'.$Ouvrant->getId(),false, 0);
-					$Ouvrant->UpdateOuverture()
+					$Ouvrant->UpdateOuverture();
 				}
 			}
 		}
@@ -155,11 +154,15 @@ class porte extends eqLogic {
 			if($Ouvrant->EvaluateCondition($isEndOpen)){
 				log::add('porte','info',$Ouvrant->getHumanName().'[Fin de cours]: Fin de course haute détectée');
 				cache::set('porte::Move::'.$Ouvrant->getId(),false, 0);
+					cache::set('porte::ChangeStateStop::'.$Ouvrant->getId(),microtime(true), 0);
+					$Ouvrant->UpdateOuverture();
 			}
 			$isEndClose=$Ouvrant->getConfiguration('EndCloseCmd').$Ouvrant->getConfiguration('EndCloseOperande').$Ouvrant->getConfiguration('EndCloseValue');
 			if($Ouvrant->EvaluateCondition($isEndClose)){
 				log::add('porte','info',$Ouvrant->getHumanName().'[Fin de cours]: Fin de course basse détectée');
 				cache::set('porte::Move::'.$Ouvrant->getId(),false, 0);
+					cache::set('porte::ChangeStateStop::'.$Ouvrant->getId(),microtime(true), 0);
+					$Ouvrant->UpdateOuverture();
 			}
 		}
 	}
@@ -223,7 +226,7 @@ class porte extends eqLogic {
 		if($this->getIsEnable()){
 			$listener = listener::byClassAndFunction('porte', 'OpenDoors', array('id' => $this->getId()));
 			$OpenStateCmd=$this->getConfiguration('OpenStateCmd');
-			if ($UpStateCmd != ''){
+			if ($OpenStateCmd != ''){
 				if (!is_object($listener))
 				    $listener = new listener();
 				$listener->setClass('porte');
@@ -235,7 +238,7 @@ class porte extends eqLogic {
 			}
 			$listener = listener::byClassAndFunction('porte', 'CloseDoors', array('id' => $this->getId()));
 			$CloseStateCmd=$this->getConfiguration('CloseStateCmd');
-			if ($DownStateCmd != ''){
+			if ($CloseStateCmd != ''){
 				if (!is_object($listener))
 				    $listener = new listener();
 				$listener->setClass('porte');
@@ -323,24 +326,20 @@ class porte extends eqLogic {
 			$cron->remove();
 	}
 	public function UpdateOuverture() {
-		$ChangeState = cache::byKey('porte::ChangeState::'.$this->getId())->getValue(false);
+		$Sense = cache::byKey('porte::Sense::'.$this->getId())->getValue(false);
 		$ChangeStateStart = cache::byKey('porte::ChangeStateStart::'.$this->getId())->getValue(microtime(true));
 		$ChangeStateStop = cache::byKey('porte::ChangeStateStop::'.$this->getId())->getValue(microtime(true));	
 		$TempsAction=$ChangeStateStop-$ChangeStateStart;	
 		$TempsAction=round($TempsAction*1000000);
 		$OuvertureActuel=$this->getCmd(null,'ouverture')->execCmd();
 		log::add('porte','debug',$this->getHumanName().' Temps de mouvement d de '.$TempsAction.'µs');
-		if($OuvertureActuel == 0){
-			$TempsAction -= $this->getTime('Tdecol');
-			log::add('porte','debug',$this->getHumanName().' Suppression du temps de décollement');
-		}
-		if($ChangeState)
-			$Temps = $this->getTime('TpsUp') - $this->getTime('Tdecol');
+		if($Sense)
+			$Temps = $this->getTime('TpsOpen');
 		else
-			$Temps = $this->getTime('TpsDown') - $this->getTime('Tdecol');
+			$Temps = $this->getTime('TpsClose');
 		$Ouverture=round($TempsAction*100/$Temps);
 		log::add('porte','debug',$this->getHumanName().' Mouvement du volet de '.$Ouverture.'%');
-		if($ChangeState)
+		if($Sense)
 			$Ouverture=round($OuvertureActuel+$Ouverture);
 		else
 			$Ouverture=round($OuvertureActuel-$Ouverture);
@@ -348,8 +347,11 @@ class porte extends eqLogic {
 			$Ouverture=0;
 		if($Ouverture>100)
 			$Ouverture=100;
-		log::add('porte','debug',$this->getHumanName().' L\'ourant est à '.$Ouverture.'%');
+		log::add('porte','debug',$this->getHumanName().' L\'ouvrant est à '.$Ouverture.'%');
 		$this->checkAndUpdateCmd('ouverture',$Ouverture);
+	}
+	public function getTime($Type) {
+		return intval($this->getConfiguration($Type,0))*intval($this->getConfiguration($Type.'Base',1000000));
 	}
 }
 class porteCmd extends cmd {
@@ -411,7 +413,7 @@ class porteCmd extends cmd {
 				cache::set('porte::ChangeStateStop::'.$this->getEqLogic()->getId(),microtime(true), 0);
 				$this->getEqLogic()->UpdateOuverture();
 			break;
-}
+		}
 	}
 }
 ?>

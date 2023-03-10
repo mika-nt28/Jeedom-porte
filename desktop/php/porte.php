@@ -73,7 +73,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 			<li role="presentation">
 				<a href="#portetab" aria-controls="home" role="tab" data-toggle="tab">
 				<i class="fa fa-tachometer"></i> 
-					{{O}}
+					{{Configuration de l'ouvrant}}
 				</a>
 			</li>
     			<li role="presentation">
@@ -158,6 +158,18 @@ $eqLogics = eqLogic::byType($plugin->getId());
 					<form class="form-horizontal">
 						<legend>{{Objet de control du l'ouvrant}}</legend>
 						<fieldset>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{Type de controleur}}
+									<sup>
+										<i class="fa fa-question-circle tooltips" title="{{Sélectionner un type de controleur}}"></i>
+									</sup>
+								</label>
+								<div class="col-sm-5">
+									<selectclass="eqLogicAttr form-control" data-l1key="configuration" data-l2key="typeControleur">
+										<option value="multi">{{Multi commande}}</option>
+										<option value="OpenStopClose">{{1 commande Ouverture/Stop/fermeture}}</option>
+								</div>
+							</div>	
 							<div class="form-group">
 								<label class="col-sm-3 control-label">{{Objet d'ouverture}}
 									<sup>

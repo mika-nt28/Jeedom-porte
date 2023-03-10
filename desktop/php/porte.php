@@ -165,9 +165,10 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									</sup>
 								</label>
 								<div class="col-sm-5">
-									<selectclass="eqLogicAttr form-control" data-l1key="configuration" data-l2key="typeControleur">
+									<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="typeControleur">
 										<option value="multi">{{Multi commande}}</option>
 										<option value="OpenStopClose">{{1 commande Ouverture/Stop/fermeture}}</option>
+									</select>
 								</div>
 							</div>	
 							<div class="form-group">

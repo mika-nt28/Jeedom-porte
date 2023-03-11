@@ -360,15 +360,15 @@ $eqLogics = eqLogic::byType($plugin->getId());
 						<legend>Delais</legend>
 						<fieldset>
 							<div class="form-group">
-								<label class="col-sm-3 control-label">{{Temps d'ouverture }}
+								<label class="col-sm-3 control-label">{{Temps d'ouverture}}
 									<sup>
 										<i class="fa fa-question-circle tooltips" title="{{Saisissez le temps pour exécuter une ouverture}}"></i>
 									</sup>
 								</label>
 								<div class="col-sm-5">
 									<div class="input-group">
-										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsUp" placeholder="{{Saisir le temps de montée}}"/>
-										<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsUpBase">
+										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsOpen" placeholder="{{Saisir le temps de montée}}"/>
+										<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsOpenBase">
 											<option value="1000000">{{Seconde}}</option>                  
 											<option value="1000">{{Miliseconde}}</option>                  
 											<option value="1">{{Microseconde}}</option>   
@@ -379,7 +379,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							<div class="form-group">
 								<label class="col-sm-3 control-label">{{Temps de fermeture}}
 									<sup>
-										<i class="fa fa-question-circle tooltips" title="{{Saisissez le temps total pour exécuter une descente}}"></i>
+										<i class="fa fa-question-circle tooltips" title="{{Saisissez le temps total pour exécuter une fermeture}}"></i>
 									</sup>
 								</label>
 								<div class="col-sm-5">

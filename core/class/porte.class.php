@@ -345,13 +345,13 @@ class porte extends eqLogic {
 		$TempsAction=$ChangeStateStop-$ChangeStateStart;	
 		$TempsAction=round($TempsAction*1000000);
 		$OuvertureActuel=$this->getCmd(null,'ouverture')->execCmd();
-		log::add('porte','debug',$this->getHumanName().' Temps de mouvement d de '.$TempsAction.'µs');
+		log::add('porte','debug',$this->getHumanName().' Temps de mouvement de '.$TempsAction.'µs');
 		if($Sense)
 			$Temps = $this->getTime('TpsOpen');
 		else
 			$Temps = $this->getTime('TpsClose');
 		$Ouverture=round($TempsAction*100/$Temps);
-		log::add('porte','debug',$this->getHumanName().' Mouvement du volet de '.$Ouverture.'%');
+		log::add('porte','debug',$this->getHumanName().' Mouvement de '.$Ouverture.'%');
 		if($Sense)
 			$Ouverture=round($OuvertureActuel+$Ouverture);
 		else
@@ -384,7 +384,7 @@ class porteCmd extends cmd {
 				}
 			break;
 			case "close":				
-				if(!cache::byKey('porte::Move::'.->getId())->getValue(false) || cache::byKey('porte::Sense::'.$Ouvrant->getId())->getValue(false)){
+				if(!cache::byKey('porte::Move::'.$Ouvrant->getId())->getValue(false) || cache::byKey('porte::Sense::'.$Ouvrant->getId())->getValue(false)){
 					$cmd=cmd::byId(str_replace('#','',$Ouvrant->getConfiguration('cmdClose')));
 					if(is_object($cmd)){
 						log::add('porte','debug',$Ouvrant->getHumanName().' Exécution de la commande '.$cmd->getHumanName());

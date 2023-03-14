@@ -393,6 +393,26 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									</div>
 								</div>
 							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{Fermeture automatique}}
+									<sup>
+										<i class="fa fa-question-circle tooltips" title="{{Saisissez le temps total pour exécuter une fermeture}}"></i>
+									</sup>
+								</label>
+								<div class="col-sm-5">
+									<div class="input-group">
+										<span class="input-group-btn">
+											<input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="AutoClose" />
+										</span>
+										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsAutoClose" placeholder="{{Saisir le temps pour fermeture automatique}}"/>
+										<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsAutoCloseBase">
+											<option value="1000000">{{Seconde}}</option>                  
+											<option value="1000">{{Miliseconde}}</option>                  
+											<option value="1">{{Microseconde}}</option>   
+										</select>
+									</div>
+								</div>
+							</div>
 						</fieldset>
 					</form>
 				</div>

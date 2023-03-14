@@ -23,6 +23,10 @@ class porte extends eqLogic {
 				cache::set('porte::ChangeStateStop::'.$Ouvrant->getId(),microtime(true), 0);
 				$Ouvrant->UpdateOuverture();
 				$Ouvrant->checkAndUpdateCmd('state',cache::byKey('porte::Sense::'.$Ouvrant->getId())->getValue(false));
+				$TpsAutoClose = $Ouvrant->getTime('TpsAutoClose');
+				if($TpsAutoClose > 0){
+					cache::set('porte::TpsAutoClose::'.$Ouvrant->getId(),$TpsAutoClose, 0);
+				}
 			}
 		}
 	}

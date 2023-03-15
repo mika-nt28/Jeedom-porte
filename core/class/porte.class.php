@@ -11,7 +11,8 @@ class porte extends eqLogic {
 					$Temps = $Ouvrant->getTime('TpsOpen');
 				else
 					$Temps = $Ouvrant->getTime('TpsClose');
-				if(isset(cache::byKey('porte::TpsAutoClose::'.$Ouvrant->getId()))){
+				$TpsAutoClose = cache::byKey('porte::TpsAutoClose::'.$Ouvrant->getId());
+				if(is_object($TpsAutoClose)){
 					$Timeout = microtime(true) - cache::byKey('porte::TpsAutoClose::'.$Ouvrant->getId())->getValue(microtime(true));
 					$Timeout=round($Timeout*1000000);
 					$TpsAutoClose = $Ouvrant->getTime('TpsAutoClose');

@@ -7,7 +7,7 @@ class porte extends eqLogic {
 			log::add('porte','debug','[Timeout]'.$Ouvrant->getHumanName().' Démarrage du démon');
 			while(true){
 				sleep(1);
-				if(cache::byKey('porte::TpsAutoClose::'.$Ouvrant->getId())->getValue(false)){
+				if(cache::byKey('porte::TpsAutoClose::'.$Ouvrant->getId())->getValue(false) !== false && cache::byKey('porte::Sense::'.$Ouvrant->getId())->getValue(false)){
 					$Timeout = microtime(true) - cache::byKey('porte::TpsAutoClose::'.$Ouvrant->getId())->getValue(microtime(true));
 					$Timeout=round($Timeout*1000000);
 					$TpsAutoClose = $Ouvrant->getTime('TpsAutoClose');
@@ -21,9 +21,7 @@ class porte extends eqLogic {
 						cache::set('porte::Sense::'.$Ouvrant->getId(),false, 0);
 						cache::set('porte::Move::'.$Ouvrant->getId(),true, 0);
 					}
-					$TpsAutoClose = cache::byKey('porte::TpsAutoClose::'.$Ouvrant->getId());
-					if(is_object($TpsAutoClose))
-						$TpsAutoClose->remove();
+					cache::set('porte::TpsAutoClose::'.$Ouvrant->getId(),false, 0);
 					continue;
 				}
 				if(!cache::byKey('porte::Move::'.$Ouvrant->getId())->getValue(false))

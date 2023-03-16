@@ -188,15 +188,15 @@ class porte extends eqLogic {
 				$Ouvrant->checkAndUpdateCmd('state',cache::byKey('porte::Sense::'.$Ouvrant->getId())->getValue(false));
 				log::add('porte','info',$Ouvrant->getHumanName().'[Fin de cours]: Fin de course haute détectée');
 				cache::set('porte::Move::'.$Ouvrant->getId(),false, 0);
-					cache::set('porte::ChangeStateStop::'.$Ouvrant->getId(),microtime(true), 0);
-					$Ouvrant->UpdateOuverture();
+					$Ouvrant->checkAndUpdateCmd('state',false);
+	$Ouvrant->checkAndUpdateCmd('ouverture',0);
 			}
 			$isEndClose=$Ouvrant->getConfiguration('EndCloseCmd').$Ouvrant->getConfiguration('EndCloseOperande').$Ouvrant->getConfiguration('EndCloseValue');
 			if($Ouvrant->EvaluateCondition($isEndClose)){
 				log::add('porte','info',$Ouvrant->getHumanName().'[Fin de cours]: Fin de course basse détectée');
 				cache::set('porte::Move::'.$Ouvrant->getId(),false, 0);
-					cache::set('porte::ChangeStateStop::'.$Ouvrant->getId(),microtime(true), 0);
-					$Ouvrant->UpdateOuverture();
+				$Ouvrant->checkAndUpdateCmd('state',true);
+	$Ouvrant->checkAndUpdateCmd('ouverture',100);
 			}
 		}
 	}

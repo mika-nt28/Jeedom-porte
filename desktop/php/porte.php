@@ -154,7 +154,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 						</fieldset>
 					</form>
 				</div>
-				<div role="tabpanel" class="tab-pane active" id="portetab">
+				<div role="tabpanel" class="tab-pane" id="portetab">
 					<form class="form-horizontal">
 						<legend>{{Objet de control du l'ouvrant}}</legend>
 						<fieldset>

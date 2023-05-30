@@ -10,11 +10,11 @@ if (!isConnect()) {
 		</a>
 	</legend>
 	<label class="col-sm-4 control-label openDate">{{Ouverure}}</label>
-	<label class="col-sm-4 control-label tpsOpen">{{Temps d'ouverure}}</label>
+	<label class="col-sm-4 control-label tpsCalOpen">{{Temps d'ouverure}}</label>
 	<label class="col-sm-4 control-label stopDate">{{Stop}}</label>
-	<label class="col-sm-4 control-label tpsStop">{{Temps d'arret}}</label>
+	<label class="col-sm-4 control-label tpsCalAutoClose">{{Temps d'arret automatique}}</label>
 	<label class="col-sm-4 control-label">{{Fermeture}}</label>
-	<label class="col-sm-4 control-label tpsClose">{{Temps de fermeture}}</label>
+	<label class="col-sm-4 control-label tpsCalClose">{{Temps de fermeture}}</label>
 	<script>  
 		var open = null;
 		var stop = null;
@@ -26,11 +26,13 @@ if (!isConnect()) {
 			}else if(stop == null){
 				stop = new Date;
 				$('.stopDate').text(stop);
-				$('.tpsOpen').text((stop - start) / 1000);
-			} else if(close == null){
+				$('.tpsCalOpen').text((stop - start) / 1000);
+			}else if(close == null){
 				close = new Date;
 				$('.stopDate').text(close);
-				$('.tpsOpen').text((close - stop) / 1000);
+				$('.tpsCalAutoClose').text((close - stop) / 1000);
+			}else{
+				$('.tpsCalClose').text((new Date - close) / 1000);
 			}
 		});
 	</script>

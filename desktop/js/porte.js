@@ -11,8 +11,29 @@ $("body").off('click', ".listCmdAction").on('click', ".listCmdAction", function(
 	});
 });
 $("body").off('click', '.tpsAction[data-action[calibration]').on('click', '.tpsAction[data-action[calibration]', function() {
+		bootbox.dialog({
+		title: "{{Apprentissage des émotions}}",
+		size: "large",
+		message:$('<div>').load('index.php?v=d&plugin=porte&modal=calibration').dialog('open');
+		buttons: {
+			"Annuler": {
+				className: "btn-default",
+				callback: function () {
+					//el.atCaret('insert', result.human);
+				}
+			},
+			success: {
+				label: "Valider",
+				className: "btn-primary",
+				callback: function () {
+					$('.eqLogicAttr[data-l2key=TpsOpen]').val($('.tpsCalOpen').text());
+					$('.eqLogicAttr[data-l2key=TpsClose]').val($('.tpsCalClose').text());
+					$('.eqLogicAttr[data-l2key=TpsAutoClose]').val($('.tpsCalAutoClose').text());
+				}
+			},
+		}
+	});
 	$('#md_modal').dialog({title: "{{Configuration des timer}}"});
-	$('#md_modal').load('index.php?v=d&plugin=port&modal=calibration').dialog('open');
 }); 
 function addCmdToTable(_cmd) {
 	var tr =$('<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">');

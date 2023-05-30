@@ -367,8 +367,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</label>
 								<div class="col-sm-5">
 									<div class="input-group">
-										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsOpen" placeholder="{{Saisir le temps de montée}}"/>
-										<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsOpenBase">
+										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsOpen" style="width: 80px" placeholder="{{Saisir le temps de montée}}"/>
+										<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsOpenBase" style="width: 150px">
 											<option value="1000000">{{Seconde}}</option>                  
 											<option value="1000">{{Miliseconde}}</option>                  
 											<option value="1">{{Microseconde}}</option>   
@@ -384,8 +384,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</label>
 								<div class="col-sm-5">
 									<div class="input-group">
-										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsClose" placeholder="{{Saisir le temps de fermeture}}"/>
-										<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsCloseBase">
+										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsClose" style="width: 80px" placeholder="{{Saisir le temps de fermeture}}"/>
+										<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsCloseBase" style="width: 150px">
 											<option value="1000000">{{Seconde}}</option>                  
 											<option value="1000">{{Miliseconde}}</option>                  
 											<option value="1">{{Microseconde}}</option>   
@@ -401,11 +401,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</label>
 								<div class="col-sm-5">
 									<div class="input-group">
-										<span class="input-group-btn">
-											<input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="AutoClose" />
-										</span>
-										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsAutoClose" placeholder="{{Saisir le temps pour fermeture automatique}}"/>
-										<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsAutoCloseBase">
+										<input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="AutoClose" style="width: 50px"/>
+										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsAutoClose"style="width: 80px" placeholder="{{Saisir le temps pour fermeture automatique}}"/>
+										<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TpsAutoCloseBase" style="width: 1500px">
 											<option value="1000000">{{Seconde}}</option>                  
 											<option value="1000">{{Miliseconde}}</option>                  
 											<option value="1">{{Microseconde}}</option>   

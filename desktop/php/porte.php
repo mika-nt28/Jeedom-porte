@@ -357,7 +357,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 						</fieldset>
-						<legend>Delais</legend>
+						<legend>{{Delais}}
+							<a class="btn btn-success btn-xs pull-right cursor CmdAction" data-action="calibration">
+								<i class="fa fa-check"></i> {{Calibration}}
+							</a>
+						</legend>
 						<fieldset>
 							<div class="form-group">
 								<label class="col-sm-3 control-label">{{Temps d'ouverture}}

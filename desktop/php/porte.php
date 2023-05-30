@@ -358,7 +358,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							</div>
 						</fieldset>
 						<legend>{{Delais}}
-							<a class="btn btn-success btn-xs pull-right cursor CmdAction" data-action="calibration">
+							<a class="btn btn-success btn-xs pull-right cursor tpsAction" data-action="calibration">
 								<i class="fa fa-check"></i> {{Calibration}}
 							</a>
 						</legend>

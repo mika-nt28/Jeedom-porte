@@ -3,13 +3,17 @@ $('#tab_zones a').click(function(e) {
     e.preventDefault();
     $(this).tab('show');
 });
-$("body").on('click', ".listCmdAction", function() {
+$("body").off('click', ".listCmdAction").on('click', ".listCmdAction", function() {
 	var el = $(this).closest('.input-group').find('.CmdAction');
 	var type=$(this).attr('data-type');
 	jeedom.cmd.getSelectModal({cmd: {type: type}}, function (result) {
 		el.value(result.human);
 	});
 });
+$("body").off('click', '.tpsAction[data-action[calibration]').on('click', '.tpsAction[data-action[calibration]', function() {
+	$('#md_modal').dialog({title: "{{Configuration des timer}}"});
+	$('#md_modal').load('index.php?v=d&plugin=port&modal=calibration').dialog('open');
+}); 
 function addCmdToTable(_cmd) {
 	var tr =$('<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">');
 	tr.append($('<td>')

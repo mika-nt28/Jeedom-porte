@@ -4,17 +4,63 @@ if (!isConnect()) {
 }
 ?>
 <div>
+	<form class="form-horizontal">
 	<legend>{{Configuration des Temps}} 
 		<a class="btn btn-success btn-xs pull-right cursor CalAction" data-action="trigger">
 			<i class="fa fa-check"></i> {{Trigger}}
 		</a>
 	</legend>
-	<label class="col-sm-4 control-label openDate">{{Ouverure}}</label>
-	<label class="col-sm-4 control-label tpsCalOpen">{{Temps d'ouverure}}</label>
-	<label class="col-sm-4 control-label stopDate">{{Stop}}</label>
-	<label class="col-sm-4 control-label tpsCalAutoClose">{{Temps d'arret automatique}}</label>
-	<label class="col-sm-4 control-label">{{Fermeture}}</label>
-	<label class="col-sm-4 control-label tpsCalClose">{{Temps de fermeture}}</label>
+			<fieldset>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" >{{Ouverure}}
+			<sup>
+				<i class="fa fa-question-circle tooltips" title="{{Date de démarrage de l'ouverture et temps d'ouverture}}"></i>
+			</sup>
+		</label>
+		<div class="col-sm-3">
+			<span  class="badge btn btn-warning openDate">
+		</div>
+		<div class="col-sm-3">
+			<span  class="badge btn btn-warning stopDate">
+		</div>
+		<div class="col-sm-3">
+			<span  class="badge btn btn-success tpsCalOpen">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" >{{Fermeture automatique}}
+			<sup>
+				<i class="fa fa-question-circle tooltips" title="{{Date de démarrage de l'ouverture et temps d'ouverture}}"></i>
+			</sup>
+		</label>
+		<div class="col-sm-3">
+			<span  class="badge btn btn-warning stopDate">
+		</div>
+		<div class="col-sm-3">
+			<span  class="badge btn btn-warning closeDate">
+		</div>
+		<div class="col-sm-3">
+			<span  class="badge btn btn-success tpsCalAutoClose">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-3 control-label" >{{Fermeture}}
+			<sup>
+				<i class="fa fa-question-circle tooltips" title="{{Date de démarrage de la fermeture et temps d'ouverture}}"></i>
+			</sup>
+		</label>
+		<div class="col-sm-3">
+			<span  class="badge btn btn-warning closeDate">
+		</div>
+		<div class="col-sm-3">
+			<span  class="badge btn btn-warning autoClose">
+		</div>
+		<div class="col-sm-3">
+			<span  class="badge btn btn-success tpsCalClose">
+		</div>
+	</div>
+</fieldset>
+</from>
 	<script>  
 		var open = null;
 		var stop = null;
@@ -26,12 +72,13 @@ if (!isConnect()) {
 			}else if(stop == null){
 				stop = new Date;
 				$('.stopDate').text(stop);
-				$('.tpsCalOpen').text((stop - start) / 1000);
+				$('.tpsCalOpen').text((stop - open) / 1000);
 			}else if(close == null){
 				close = new Date;
-				$('.stopDate').text(close);
+				$('.closeDate').text(close);
 				$('.tpsCalAutoClose').text((close - stop) / 1000);
 			}else{
+				$('.autoClose').text(new Date);
 				$('.tpsCalClose').text((new Date - close) / 1000);
 			}
 		});

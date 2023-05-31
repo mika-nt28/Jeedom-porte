@@ -10,11 +10,11 @@ $("body").off('click', ".listCmdAction").on('click', ".listCmdAction", function(
 		el.value(result.human);
 	});
 });
-$("body").off('click', '.tpsAction[data-action[calibration]').on('click', '.tpsAction[data-action[calibration]', function() {
+$("body").off('click', '.tpsAction[data-action=calibration]').on('click', '.tpsAction[data-action=calibration]', function() {
 		bootbox.dialog({
 		title: "{{Apprentissage des émotions}}",
 		size: "large",
-		message:$('<div>').load('index.php?v=d&plugin=porte&modal=calibration').dialog('open');
+		message:$('<div>').load('index.php?v=d&plugin=porte&modal=calibration'),
 		buttons: {
 			"Annuler": {
 				className: "btn-default",

@@ -133,7 +133,7 @@ class porte extends eqLogic {
 							}else{
 								log::add('porte','info',$Ouvrant->getHumanName().'[Open]: Action détectée sur '.$detectedCmd->getHumanName());
 								cache::set('porte::ChangeStateStart::'.$Ouvrant->getId(),microtime(true), 0);
-								cache::set('porte::Sense::'.$Ouvrant->getId(),false, 0);
+								cache::set('porte::Sense::'.$Ouvrant->getId(),true, 0);
 								cache::set('porte::Move::'.$Ouvrant->getId(),true, 0);
 							}
 						}

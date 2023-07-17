@@ -39,7 +39,7 @@ class porte extends eqLogic {
 				cache::set('porte::ChangeStateStop::'.$Ouvrant->getId(),microtime(true), 0);
 				$Ouvrant->UpdateOuverture();
 				$Ouvrant->checkAndUpdateCmd('state',cache::byKey('porte::Sense::'.$Ouvrant->getId())->getValue(false));
-				if($Ouvrant->getconfiguration('TpsAutoClose')){
+				if($Ouvrant->getconfiguration('TpsAutoClose',0) > 0){
 					cache::set('porte::TpsAutoClose::'.$Ouvrant->getId(),microtime(true), 0);
 				}
 			}
@@ -185,18 +185,17 @@ class porte extends eqLogic {
 		if (is_object($detectedCmd) && is_object($Ouvrant) && $Ouvrant->getIsEnable()) {
 			$isEndOpen=$Ouvrant->getConfiguration('EndOpenCmd').$Ouvrant->getConfiguration('EndOpenOperande').$Ouvrant->getConfiguration('EndOpenValue');
 			if($Ouvrant->EvaluateCondition($isEndOpen)){
-				$Ouvrant->checkAndUpdateCmd('state',cache::byKey('porte::Sense::'.$Ouvrant->getId())->getValue(false));
 				log::add('porte','info',$Ouvrant->getHumanName().'[Fin de cours]: Fin de course haute détectée');
 				cache::set('porte::Move::'.$Ouvrant->getId(),false, 0);
-					$Ouvrant->checkAndUpdateCmd('state',false);
-	$Ouvrant->checkAndUpdateCmd('ouverture',0);
+				$Ouvrant->checkAndUpdateCmd('state',cache::byKey('porte::Sense::'.$Ouvrant->getId())->getValue(false));
+				$Ouvrant->checkAndUpdateCmd('ouverture',0);
 			}
 			$isEndClose=$Ouvrant->getConfiguration('EndCloseCmd').$Ouvrant->getConfiguration('EndCloseOperande').$Ouvrant->getConfiguration('EndCloseValue');
 			if($Ouvrant->EvaluateCondition($isEndClose)){
 				log::add('porte','info',$Ouvrant->getHumanName().'[Fin de cours]: Fin de course basse détectée');
 				cache::set('porte::Move::'.$Ouvrant->getId(),false, 0);
-				$Ouvrant->checkAndUpdateCmd('state',true);
-	$Ouvrant->checkAndUpdateCmd('ouverture',100);
+				$Ouvrant->checkAndUpdateCmd('state',cache::byKey('porte::Sense::'.$Ouvrant->getId())->getValue(false));
+				$Ouvrant->checkAndUpdateCmd('ouverture',100);
 			}
 		}
 	}
@@ -324,7 +323,6 @@ class porte extends eqLogic {
 			$Commande->setEqLogic_id($this->getId());
 			$Commande->setType($Type);
 			$Commande->setSubType($SubType);	
-		} 	
 			if($Value != null)
 				$Commande->setValue($Value);
 			if($icon != null)
@@ -332,15 +330,16 @@ class porte extends eqLogic {
 			if($generic_type != null)
 				$Commande->setDisplay('generic_type', $generic_type);
 			$Commande->save();
+		}
 		return $Commande;
 	}
 	public function postSave() {
 		$this->StopListener();
 		$etat=$this->AddCommande("Etat","state","info",'binary',0,null,null,'GARAGE_STATE');
-		$hauteur=$this->AddCommande("Ouverture","ouverture","info",'numeric',1);
+		$hauteur=$this->AddCommande("Proportionnelle","ouverture","info",'numeric',1);
 		//$this->AddCommande("Position","position","action",'slider',1,$hauteur->getId(),null,'FLAP_SLIDER');
-		$this->AddCommande("Ouverture on","open","action", 'other',1,$etat->getId(),null,'GB_OPEN');
-		$this->AddCommande("Fermeture off","close","action", 'other',1,$etat->getId(),null,'GB_CLOSE');
+		$this->AddCommande("Ouvert","open","action", 'other',1,$etat->getId(),null,'GB_OPEN');
+		$this->AddCommande("Fermer","close","action", 'other',1,$etat->getId(),null,'GB_CLOSE');
 		$this->AddCommande("Arret","stop","action", 'other',1,null,null,'<i class="fa fa-stop"></i>');
 		$this->StartListener();
 		$this->CreateDemon();   

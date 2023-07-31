@@ -22,7 +22,7 @@ class porte extends eqLogic {
 							cache::set('porte::Sense::'.$Ouvrant->getId(),true, 0);
 							cache::set('porte::Move::'.$Ouvrant->getId(),true, 0);
 						}
-                    }
+					}
 					cache::set('porte::TpsAutoClose::'.$Ouvrant->getId(),false, 0);
 					continue;
 				}

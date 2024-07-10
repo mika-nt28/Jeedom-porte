@@ -23,7 +23,7 @@ class porte extends eqLogic {
 							$Ouvrant->checkAndUpdateCmd('state',true);
 							cache::set('porte::Move::'.$Ouvrant->getId(),true, 0);
 						}
-                    }
+					}
 					cache::set('porte::TpsAutoClose::'.$Ouvrant->getId(),false, 0);
 					continue;
 				}
@@ -330,21 +330,21 @@ class porte extends eqLogic {
 			$Commande->setSubType($SubType);	
 			if($Value != null)
 				$Commande->setValue($Value);
-		}
 			if($icon != null)
 				$Commande->setDisplay('icon', $icon);
 			if($generic_type != null)
 				$Commande->setDisplay('generic_type', $generic_type);
 			$Commande->save();
+		}
 		return $Commande;
 	}
 	public function postSave() {
 		$this->StopListener();
-		$etat=$this->AddCommande("Etat","state","info",'binary',0,null,null,'GARAGE_STATE');
+		$etat=$this->AddCommande("Etat","state","info",'binary',0,null,"core::garage",'GARAGE_STATE');
 		$hauteur=$this->AddCommande("Proportionnelle","ouverture","info",'numeric',1);
 		$this->AddCommande("Position","position","action",'slider',1,$hauteur->getId(),null,'FLAP_SLIDER');
-		$this->AddCommande("Ouvrir","open","action", 'other',1,$etat->getId(),null,'GB_OPEN');
-		$this->AddCommande("Fermer","close","action", 'other',1,$etat->getId(),null,'GB_CLOSE');
+		$this->AddCommande("Ouvrir","open","action", 'other',1,$etat->getId(),"core::garage",'GB_OPEN');
+		$this->AddCommande("Fermer","close","action", 'other',1,$etat->getId(),"core::garage",'GB_CLOSE');
 		$this->AddCommande("Arret","stop","action", 'other',1,null,null,'<i class="fa fa-stop"></i>');
 		$this->StartListener();
 		$this->CreateDemon();   
